@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factor Invaders</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            text-align: center;
+        }
+        canvas {
+            background-color: black;
+            display: block;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Factor Invaders</h1>
+    <p>Press a prime number (2,3,5,7,11,13,17,19) to load the weapon, then press SPACE to fire.</p>
+    <p id="livesDisplay">Lives: 3</p>
+    <p id="scoreDisplay">Invaders Destroyed: 0</p>
+    <canvas id="gameCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = 800;
+        canvas.height = 600;
+        
+        let playerX = canvas.width / 2;
+        let currentFactor = null;
+        let bullets = [];
+        let invaders = [];
+        let lives = 3;
+        let score = 0;
+        let invaderDirection = 1;
+        let invaderSpeed = 4;
+        let bulletSpeed = 10;
+        let spawnRate = 2;
+        let gameRunning = false;
+        
+        const primes = [2, 3, 5, 7, 11, 13, 17, 19];
+        
+        function getRandomMultiple() {
+            let base = primes[Math.floor(Math.random() * primes.length)];
+            let factor = primes[Math.floor(Math.random() * primes.length)];
+            return base * factor;
+        }
+        
+        function generateInvader() {
+            for (let i = 0; i < spawnRate; i++) {
+                let multiple = getRandomMultiple();
+                invaders.push({ x: Math.random() * (canvas.width - 50), y: 50, value: multiple, factors: getFactors(multiple) });
+            }
+        }
+        
+        function getFactors(num) {
+            let factors = [];
+            primes.forEach(prime => {
+                while (num % prime === 0) {
+                    factors.push(prime);
+                    num /= prime;
+                }
+            });
+            return factors;
+        }
+        
+        function drawPlayer() {
+            ctx.fillStyle = "white";
+            ctx.fillRect(playerX - 20, canvas.height - 40, 40, 40);
+        }
+        
+        function drawBullets() {
+            ctx.fillStyle = "yellow";
+            bullets.forEach((bullet, index) => {
+                ctx.fillRect(bullet.x - 3, bullet.y, 6, 15);
+                bullet.y -= bulletSpeed;
+                if (bullet.y < 0) bullets.splice(index, 1);
+            });
+        }
+        
+        function drawInvaders() {
+            ctx.fillStyle = "red";
+            invaders.forEach(invader => {
+                ctx.fillRect(invader.x, invader.y, 50, 40);
+                ctx.fillStyle = "white";
+                ctx.fillText(invader.value, invader.x + 10, invader.y + 25);
+            });
+        }
+        
+        function moveInvaders() {
+            invaders.forEach(invader => {
+                invader.x += invaderSpeed * invaderDirection;
+                if (invader.x <= 0 || invader.x >= canvas.width - 50) {
+                    invaderDirection *= -1;
+                    invader.y += 40;
+                    if (invader.y >= canvas.height - 100) {
+                        lives--;
+                        document.getElementById("livesDisplay").innerText = "Lives: " + lives;
+                        if (lives === 0) {
+                            alert("Game Over");
+                            gameRunning = false;
+                            return;
+                        }
+                    }
+                }
+            });
+        }
+        
+        function checkCollisions() {
+            bullets.forEach((bullet, bIndex) => {
+                invaders.forEach((invader, iIndex) => {
+                    if (bullet.x > invader.x && bullet.x < invader.x + 50 && bullet.y < invader.y + 30) {
+                        if (invader.factors.includes(bullet.value)) {
+                            invader.factors.splice(invader.factors.indexOf(bullet.value), 1);
+                            bullets.splice(bIndex, 1);
+                            if (invader.factors.length === 0) {
+                                invaders.splice(iIndex, 1);
+                                score++;
+                                document.getElementById("scoreDisplay").innerText = "Invaders Destroyed: " + score;
+                                if (score === 10) {
+                                    alert("You Win! Round Complete!");
+                                    gameRunning = false;
+                                    return;
+                                }
+                                generateInvader();
+                            }
+                        }
+                    }
+                });
+            });
+        }
+        
+        function updateGame() {
+            if (!gameRunning) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPlayer();
+            drawBullets();
+            drawInvaders();
+            moveInvaders();
+            checkCollisions();
+            requestAnimationFrame(updateGame);
+        }
+        
+        document.addEventListener("keydown", (event) => {
+            if (primes.includes(parseInt(event.key))) {
+                currentFactor = parseInt(event.key);
+            } else if (event.key === " ") {
+                if (currentFactor !== null) {
+                    bullets.push({ x: playerX, y: canvas.height - 60, value: currentFactor });
+                    currentFactor = null;
+                }
+            } else if (event.key === "ArrowLeft" && playerX > 25) {
+                playerX -= 25;
+            } else if (event.key === "ArrowRight" && playerX < canvas.width - 25) {
+                playerX += 25;
+            }
+        });
+        
+        function startGame() {
+            if (!gameRunning) {
+                gameRunning = true;
+                generateInvader();
+                updateGame();
+            }
+        }
+        
+        startGame();
+    </script>
+</body>
+</html>
