@@ -8,6 +8,8 @@ const boardHeight = 500;
 let playerX = 370;
 const playerSpeed = 20;
 
+let selectedBomb = 1;
+
 let enemies = [
     { id: 1, number: 10, health: 4, x: 60, y: 60, element: null },
     { id: 2, number: 12, health: 4, x: 180, y: 60, element: null },
@@ -52,6 +54,36 @@ function movePlayer(direction) {
     }
 
     renderPlayer();
+}
+
+function fireBomb() {
+    if (gameOver || bomb) {
+        return;
+    }
+
+    bomb = document.createElement("div");
+    bomb.classList.add("bomb");
+    bomb.textContent = selectedBomb;
+    bomb.dataset.value = selectedBomb;
+    bomb.style.left = `${playerX + 23}px`;
+    bomb.style.top = `${boardHeight - 50}px`;
+    gameBoard.appendChild(bomb);
+}
+
+function moveBomb() {
+    if (!bomb) {
+        return;
+    }
+
+    let bombTop = parseInt(bomb.style.top, 10);
+    bombTop -= 8;
+    bomb.style.top = `${bombTop}px`;
+
+    if (bombTop < 0) {
+        bomb.remove();
+        bomb = null;
+        return;
+    }
 }
 
 function moveEnemies() {
@@ -103,8 +135,14 @@ document.addEventListener("keydown", (event) => {
         case "ArrowRight":
             movePlayer(1);
             break;
+        case " ":
+            event.preventDefault();
+            fireBomb();
+            break;
     }
 });
+
+restartBtn.addEventListener("click", resetGame);
 
 renderPlayer();
 createEnemies();
