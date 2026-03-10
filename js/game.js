@@ -8,6 +8,29 @@ const boardHeight = 500;
 let playerX = 370;
 const playerSpeed = 20;
 
+let enemies = [
+    { id: 1, number: 10, health: 4, x: 60, y: 60, element: null },
+    { id: 2, number: 12, health: 4, x: 180, y: 60, element: null },
+    { id: 3, number: 20, health: 4, x: 300, y: 60, element: null },
+    { id: 4, number: 24, health: 4, x: 420, y: 60, element: null },
+    { id: 5, number: 30, health: 4, x: 540, y: 60, element: null }
+];
+
+let enemyDirection = 1;
+const enemySpeed = 1;
+const dropDistance = 20;
+
+function createEnemies() {
+    enemies.forEach((enemy) => {
+        const enemyDiv = document.createElement("div");
+        enemyDiv.classList.add("enemy");
+        enemyDiv.textContent = enemy.number;
+        enemyDiv.style.left = `${enemy.x}px`;
+        enemyDiv.style.top = `${enemy.y}px`;
+        gameBoard.appendChild(enemyDiv);
+        enemy.element = enemyDiv;
+    });
+}
 
 function renderPlayer() {
     player.style.left = `${playerX}px`;
@@ -30,3 +53,58 @@ function movePlayer(direction) {
 
     renderPlayer();
 }
+
+function moveEnemies() {
+    if (gameOver) {
+        return;
+    }
+
+    let hitEdge = false;
+
+    enemies.forEach((enemy) => {
+        if (enemy.health <= 0 || !enemy.element) {
+            return;
+        }
+
+        enemy.x += enemyDirection * enemySpeed;
+
+        if (enemy.x <= 0 || enemy.x >= boardWidth - 70) {
+            hitEdge = true;
+        }
+    });
+
+    if (hitEdge) {
+        enemyDirection *= -1;
+
+        enemies.forEach((enemy) => {
+            if (enemy.health > 0 && enemy.element) {
+                enemy.y += dropDistance;
+
+                if (enemy.y >= boardHeight - 100) {
+                    endGame(false);
+                }
+            }
+        });
+    }
+
+    enemies.forEach((enemy) => {
+        if (enemy.health > 0 && enemy.element) {
+            enemy.element.style.left = `${enemy.x}px`;
+            enemy.element.style.top = `${enemy.y}px`;
+        }
+    });
+}
+
+document.addEventListener("keydown", (event) => {
+    switch (event.key) {
+        case "ArrowLeft":
+            movePlayer(-1);
+            break;
+        case "ArrowRight":
+            movePlayer(1);
+            break;
+    }
+});
+
+renderPlayer();
+createEnemies();
