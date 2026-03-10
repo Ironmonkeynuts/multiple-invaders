@@ -227,6 +227,40 @@ function selectBomb(value) {
     updateMessage(`Bomb ${value} selected`, "secondary");
 }
 
+function resetGame() {
+    enemies.forEach((enemy) => {
+        if (enemy.element) {
+            enemy.element.remove();
+        }
+    });
+
+    if (bomb) {
+        bomb.remove();
+        bomb = null;
+    }
+
+    enemies = [
+        { id: 1, number: 10, health: 4, x: 60, y: 60, element: null },
+        { id: 2, number: 12, health: 4, x: 180, y: 60, element: null },
+        { id: 3, number: 20, health: 4, x: 300, y: 60, element: null },
+        { id: 4, number: 24, health: 4, x: 420, y: 60, element: null },
+        { id: 5, number: 30, health: 4, x: 540, y: 60, element: null }
+    ];
+
+    enemyDirection = 1;
+    playerX = 370;
+    selectedBomb = 1;
+    score = 0;
+    gameOver = false;
+
+    renderPlayer();
+    createEnemies();
+    updateScoreDisplay(score);
+    updateSelectedBombDisplay(selectedBomb);
+    updateGameStatus("Playing");
+    updateMessage("New game started!", "info");
+}
+
 document.addEventListener("keydown", (event) => {
     switch (event.key) {
         case "ArrowLeft":
