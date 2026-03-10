@@ -86,6 +86,67 @@ function moveBomb() {
         bomb = null;
         return;
     }
+
+    checkBombCollision();
+}
+
+function checkBombCollision() {
+    if (!bomb) {
+        return;
+    }
+
+    const bombRect = bomb.getBoundingClientRect();
+
+    enemies.forEach((enemy) => {
+        if (enemy.health <= 0 || !enemy.element) {
+            return;
+        }
+
+        const enemyRect = enemy.element.getBoundingClientRect();
+
+        const collision =
+            bombRect.left < enemyRect.right &&
+            bombRect.right > enemyRect.left &&
+            bombRect.top < enemyRect.bottom &&
+            bombRect.bottom > enemyRect.top;
+
+        if (collision) {
+            const bombValue = parseInt(bomb.dataset.value, 10);
+            handleHit(enemy, bombValue);
+            bomb.remove();
+            bomb = null;
+        }
+    });
+}
+
+function handleHit(enemy, bombValue) {
+    const damage = calculateDamage(bombValue, enemy.number);
+
+    if (damage === 0) {
+        updateMessage(`${bombValue} is not a factor of ${enemy.number}`, "danger");
+        return;
+    }
+
+    enemy.health -= damage;
+
+    if (isPrimeFactor(bombValue, enemy.number)) {
+        score += 20;
+        updateMessage(`Prime factor hit! ${bombValue} is a prime factor of ${enemy.number}`, "success");
+    } else {
+        score += 10;
+        updateMessage(`${bombValue} is a factor of ${enemy.number}`, "info");
+    }
+
+    updateScoreDisplay(score);
+
+    if (enemy.health <= 0) {
+        score += 50;
+        updateScoreDisplay(score);
+        enemy.element.remove();
+        enemy.element = null;
+        updateMessage(`Ship ${enemy.number} destroyed!`, "warning");
+        checkWin();
+    }
 }
 
 function moveEnemies() {
