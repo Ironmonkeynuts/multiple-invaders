@@ -9,7 +9,9 @@ let playerX = 370;
 const playerSpeed = 20;
 
 let selectedBomb = 1;
+let score = 0;
 let bomb = null;
+let gameOver = false;
 
 const bombValues = [1, 2, 3, 5];
 
@@ -191,6 +193,25 @@ function moveEnemies() {
     });
 }
 
+function checkWin() {
+    const remainingEnemies = enemies.filter((enemy) => enemy.health > 0);
+
+    if (remainingEnemies.length === 0) {
+        endGame(true);
+    }
+}
+
+function endGame(playerWon) {
+    gameOver = true;
+    updateGameStatus(playerWon ? "You Win!" : "Game Over");
+
+    if (playerWon) {
+        updateMessage("You destroyed all the multiple ships!", "success");
+    } else {
+        updateMessage("A ship reached the danger zone!", "danger");
+    }
+}
+
 function gameLoop() {
     moveBomb();
     moveEnemies();
@@ -237,4 +258,6 @@ restartBtn.addEventListener("click", resetGame);
 
 renderPlayer();
 createEnemies();
+updateScoreDisplay(score);
 updateSelectedBombDisplay(selectedBomb);
+setInterval(gameLoop, 30);
