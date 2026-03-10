@@ -1,0 +1,69 @@
+body {
+    background: linear-gradient(to bottom, #050816, #0b1d3a);
+    color: #ffffff;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+.game-panel {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.35);
+}
+
+#game-board {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    height: 500px;
+    margin: 0 auto;
+    background: #000814;
+    border: 2px solid #4dabf7;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+#player {
+    position: absolute;
+    width: 60px;
+    height: 20px;
+    background: #ffd43b;
+    bottom: 20px;
+    left: 370px;
+    border-radius: 8px;
+}
+
+.enemy {
+    position: absolute;
+    width: 70px;
+    height: 50px;
+    background: #ff6b6b;
+    color: #ffffff;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    border: 2px solid #ffa8a8;
+}
+
+.bomb {
+    position: absolute;
+    width: 14px;
+    height: 24px;
+    background: #51cf66;
+    color: #000;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 24px;
+    border-radius: 4px;
+}
+
+.alert {
+    margin-bottom: 0;
+}
+
+.destroyed {
+    opacity: 0.25;
+}
