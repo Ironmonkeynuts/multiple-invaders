@@ -9,6 +9,7 @@ let playerX = 370;
 const playerSpeed = 20;
 
 let selectedBomb = 1;
+let bomb = null;
 
 const bombValues = [1, 2, 3, 5];
 
@@ -236,3 +237,4 @@ restartBtn.addEventListener("click", resetGame);
 
 renderPlayer();
 createEnemies();
+updateSelectedBombDisplay(selectedBomb);
