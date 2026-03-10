@@ -208,7 +208,7 @@ function endGame(playerWon) {
     if (playerWon) {
         updateMessage("You destroyed all the multiple ships!", "success");
     } else {
-        updateMessage("A ship reached the danger zone!", "danger");
+        updateMessage("A ship reached the danger zone! You lose! Try again.", "danger");
     }
 }
 
