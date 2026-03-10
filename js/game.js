@@ -10,6 +10,8 @@ const playerSpeed = 20;
 
 let selectedBomb = 1;
 
+const bombValues = [1, 2, 3, 5];
+
 let enemies = [
     { id: 1, number: 10, health: 4, x: 60, y: 60, element: null },
     { id: 2, number: 12, health: 4, x: 180, y: 60, element: null },
@@ -127,6 +129,21 @@ function moveEnemies() {
     });
 }
 
+function gameLoop() {
+    moveBomb();
+    moveEnemies();
+}
+
+function selectBomb(value) {
+    if (!bombValues.includes(value)) {
+        return;
+    }
+
+    selectedBomb = value;
+    updateSelectedBombDisplay(selectedBomb);
+    updateMessage(`Bomb ${value} selected`, "secondary");
+}
+
 document.addEventListener("keydown", (event) => {
     switch (event.key) {
         case "ArrowLeft":
@@ -138,6 +155,18 @@ document.addEventListener("keydown", (event) => {
         case " ":
             event.preventDefault();
             fireBomb();
+            break;
+        case "1":
+            selectBomb(1);
+            break;
+        case "2":
+            selectBomb(2);
+            break;
+        case "3":
+            selectBomb(3);
+            break;
+        case "5":
+            selectBomb(5);
             break;
     }
 });
