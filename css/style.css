@@ -11,6 +11,12 @@ body {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.35);
 }
 
+.hud-box {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 0.75rem;
+}
+
 #game-board {
     position: relative;
     width: 100%;
@@ -31,12 +37,13 @@ body {
     bottom: 20px;
     left: 370px;
     border-radius: 8px;
+    z-index: 5;
 }
 
 .enemy {
     position: absolute;
-    width: 70px;
-    height: 50px;
+    width: 72px;
+    height: 52px;
     background: #ff6b6b;
     color: #ffffff;
     font-weight: bold;
@@ -45,11 +52,39 @@ body {
     justify-content: center;
     border-radius: 10px;
     border: 2px solid #ffa8a8;
+    z-index: 3;
+    transition: transform 0.12s ease, opacity 0.2s ease;
+}
+/* Enemy hit animation */
+.enemy.hit {
+    transform: scale(1.08);
+}
+/* Enemy destroyed animation */
+.enemy.destroyed {
+    opacity: 0;
+    transform: scale(0.8);
+}
+/* Enemy health bar */
+.enemy-health {
+    position: absolute;
+    width: 72px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    overflow: hidden;
+    z-index: 2;
 }
 
+.enemy-health-fill {
+    height: 100%;
+    width: 100%;
+    background: #51cf66;
+    transition: width 0.2s ease;
+}
+/* Bomb */
 .bomb {
     position: absolute;
-    width: 14px;
+    width: 16px;
     height: 24px;
     background: #51cf66;
     color: #000;
@@ -58,12 +93,38 @@ body {
     text-align: center;
     line-height: 24px;
     border-radius: 4px;
+    z-index: 4;
+}
+
+/* overlay */
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+}
+
+.overlay.hidden {
+    display: none;
+}
+
+.overlay-card {
+    max-width: 360px;
+    background: #102542;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.35);
+}
+/* alert */
+.card,
+.alert {
+    color: #212529;
 }
 
 .alert {
     margin-bottom: 0;
-}
-
-.destroyed {
-    opacity: 0.25;
 }
